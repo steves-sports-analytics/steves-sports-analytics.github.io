@@ -76,8 +76,8 @@ The "answer" text and Unsung Hero cards are computed on the page from the data, 
 - The source folder was rebuilt from the live page, so build.py reproduces the published site exactly. Brainstorm files are kept in "older site versions/brainstorm version 2026-10-25 (source)" and website source/brainstorm_only/ (not in the repo).
 - College: cbb_refresh.py is the v1 script again: python3 cbb_refresh.py --box <team_box_2027.parquet> --season 2026-27 (keeps 2025-26 final until the median team has 5 games). No --sched, no prospects step.
 - Hosting moved from Netlify (15 credits per publish) to GitHub Pages (free):
-  Repo: https://github.com/stevietrombetta-hue/sports-analytics-portfolio
-  Site: https://stevietrombetta-hue.github.io/sports-analytics-portfolio/
+  Repo: https://github.com/steves-sports-analytics/steves-sports-analytics.github.io
+  Site: https://steves-sports-analytics.github.io/
   build.py now also writes docs/index.html; GitHub Pages serves main branch /docs.
 - Publishing = uploading the changed files to the repo (main branch) and committing; Pages republishes in about a minute. Try bigger changes on a separate branch first.
 - The old Netlify site stays up with the Oct 22 data until Steve decides what to do with it.

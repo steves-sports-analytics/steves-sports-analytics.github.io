@@ -1,6 +1,6 @@
 # Steve Trombetta · Sports Analytics Notebook
 
-Live site: https://stevietrombetta-hue.github.io/sports-analytics-portfolio/
+Live site: https://steves-sports-analytics.github.io/
 
 A one-page sports analytics portfolio that answers common sports talking points with data, refreshed weekly:
 
