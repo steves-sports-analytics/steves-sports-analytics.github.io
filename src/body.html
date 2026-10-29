@@ -1,0 +1,335 @@
+<header class="mast">
+  <div class="wrap mast-in">
+    <a class="brand" href="#top"><b>Steve Trombetta</b><span>A sports analytics notebook</span></a>
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#cbb">College Hoops</a>
+      <a href="#nba">NBA</a>
+      <a href="#nfl">NFL</a>
+      <a href="#nhl">NHL</a>
+      <a href="#epl">Premier League</a>
+      <a href="#fav">Favorites</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- INTRO -->
+  <section class="intro-sec">
+    <div class="wrap narrow">
+      <p class="eyebrow">Notebook · updated every Wednesday</p>
+      <h1>The talking points I never had time to research, answered with data.</h1>
+      <p class="lede">I'm Steve, a senior in Information Systems &amp; Analytics at Rowan and a former college soccer player (center back, so I notice the guys who don't make the highlight reel). Each entry starts with a question fans actually argue about: is this team real or hyped, is this player good or just well-placed. Then I let the numbers settle it, and point out the <b>unsung heroes</b> worth knowing before you talk ball or put money on a game.</p>
+      <p class="stats-line"><span id="sTeams">365</span> college teams rated · <span id="sGames">5,752</span> games modeled · <span id="sAcc">75.2%</span> of winners called · 54 draftees tracked</p>
+    </div>
+  </section>
+
+  <!-- LATEST ENTRIES -->
+  <section class="entries-sec" id="entries">
+    <div class="wrap narrow">
+      <h2 class="sec-h">Latest entries</h2>
+      <ol class="entries" id="entryList"></ol>
+    </div>
+  </section>
+
+  <!-- ===================== COLLEGE BASKETBALL ===================== -->
+  <article class="entry" id="cbb">
+    <div class="wrap">
+      <header class="e-head narrow">
+        <p class="e-kick"><span class="sport">College Basketball</span> · <span class="cbb-season">2025–26</span> · <span class="cbb-updated"></span></p>
+        <h2>Is this team actually good, or just hyped?</h2>
+        <p class="dek">Win-loss records hide how good a team really is. Fast teams score more, and soft schedules pad records. I rate every Division I team on points per 100 possessions, then adjust for who they played and where, in the style of KenPom.</p>
+      </header>
+
+      <div class="verdict" id="vCBB">
+        <div class="v-ans"><span class="v-k">What I found</span><div class="v-body"></div><div class="v-foot"><span class="v-upd"></span></div></div>
+        <aside class="v-hero"><span class="v-k">Unsung hero</span><div class="h-body"></div></aside>
+      </div>
+
+      <div class="grid2">
+        <figure class="panel">
+          <div class="panel-h"><h3>Offense vs. defense, every team</h3><button class="btn sm" id="zoomBtn" aria-pressed="false">Zoom to top 25</button></div>
+          <p class="cap">Up and right is better. Tap a logo to find the team in the table below.</p>
+          <div class="chart" id="scatter"><div class="tip" id="tip1"></div></div>
+        </figure>
+        <div class="side-stack">
+          <div class="panel pred">
+            <h3>Does it predict?</h3>
+            <p class="cap">Pick the higher-rated team, plus home court:</p>
+            <div class="big3">
+              <div class="m"><div class="n" id="pAcc">75.2%</div><div class="t">of games called</div></div>
+              <div class="m"><div class="n" id="pPost">70.5%</div><div class="t" id="pPostT">of postseason games</div></div>
+              <div class="m"><div class="n" id="pMae">8.4</div><div class="t">points, avg. miss</div></div>
+            </div>
+            <p class="cap">In-sample, so a true forecast would score a bit lower.</p>
+          </div>
+          <div class="panel champ">
+            <h3>Last season's champion check</h3>
+            <p>Michigan won the title over UConn, 69–63, and finished No. 1 in the model at 37–3 with a +43.8 margin: No. 3 offense, No. 1 defense.</p>
+          </div>
+        </div>
+      </div>
+
+      <details class="more">
+        <summary>Matchup projector: pick any two teams</summary>
+        <div class="panel mm">
+          <div class="mm-pick">
+            <div class="field"><label for="mmA">Team A</label><select id="mmA"></select></div>
+            <div class="vs">vs</div>
+            <div class="field"><label for="mmB">Team B</label><select id="mmB"></select></div>
+          </div>
+          <div class="seg-ctl" role="group" aria-label="Venue" id="venue">
+            <button data-v="1">A at home</button><button data-v="0" aria-pressed="true">Neutral</button><button data-v="-1">B at home</button>
+          </div>
+          <div class="sb" id="sb"></div>
+          <div class="wp" id="wp"></div>
+          <div class="wp-l" id="wpl"></div>
+          <p class="cap">Each offense's adjusted rating against the other's defense, at a combined tempo, with a 1.4% home-court edge. Win chance assumes an 11-point standard deviation.</p>
+        </div>
+      </details>
+
+      <details class="more">
+        <summary>Full ratings table</summary>
+        <div class="panel">
+          <div class="panel-h"><h3><span class="cbb-season">2025–26</span> ratings</h3><span class="cap" id="cbbCount">Top 25</span></div>
+          <div class="tbl-tools">
+            <input type="search" id="cbbQ" placeholder="Search a team…" aria-label="Search teams">
+            <button class="btn sm" id="cbbAll">Show all</button>
+          </div>
+          <div class="tw" id="cbbWrap"><table id="cbbT"></table></div>
+        </div>
+      </details>
+
+      <details class="more">
+        <summary>How I built it</summary>
+        <div class="panel how">
+          <ol class="steps">
+            <li><b>Count possessions</b> from the box score (Dean Oliver's estimate), averaged across both teams: <code>FGA − ORB + TOV + 0.475·FTA</code></li>
+            <li><b>Raw efficiency:</b> points scored and allowed per 100 possessions, which takes pace out of it.</li>
+            <li><b>Adjust for opponent:</b> scale each game by the opponent's rating and repeat until the ratings stop moving. Home court is worth 1.4%, and late-season games count up to 1.5×.</li>
+            <li><b>Rank by margin:</b> AdjEM = adjusted offense − adjusted defense, the expected margin per 100 possessions against an average team.</li>
+          </ol>
+          <p class="cap"><b>Stack:</b> ESPN box scores (hoopR) → Python + pandas → this page, with the same model built in Power BI using Power Query self-merges. Refreshed weekly during the season.</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ===================== NBA ===================== -->
+  <article class="entry" id="nba">
+    <div class="wrap">
+      <header class="e-head narrow">
+        <p class="e-kick"><span class="sport">NBA</span> · 2026 Draft &amp; Rookie Report · <span class="rk-updated"></span></p>
+        <h2>Did NBA teams get it right?</h2>
+        <p class="dek">I scored every college player taken in the 2026 draft from 0 to 100, comparing him to other players at his position and factoring in his age, then compared it with where he actually went. Once the season starts, a weekly Rookie Report checks who was right: the model or the scouts.</p>
+      </header>
+
+      <div class="verdict" id="vDraft">
+        <div class="v-ans"><span class="v-k">What I found</span><div class="v-body"></div><div class="v-foot"><span class="v-upd"></span></div></div>
+        <aside class="v-hero"><span class="v-k">Unsung hero</span><div class="h-body"></div></aside>
+      </div>
+
+      <div class="panel" id="rookie">
+        <div class="panel-h"><h3>Rookie Report</h3><span class="cap" id="rkSub">Model picks vs. NBA production, updated weekly</span></div>
+        <div id="rkBody"></div>
+      </div>
+
+      <figure class="panel">
+        <div class="panel-h"><h3>Model vs. the league</h3><span class="cap"><b style="color:var(--good)">Green</b>: model clearly higher than NBA teams · <b style="color:var(--bad)">red</b>: clearly lower · gray: about the same. Labeled players are the steals and reaches above.</span></div>
+        <div class="chart" id="vs"><div class="tip" id="tip2"></div></div>
+      </figure>
+
+      <details class="more">
+        <summary>The full board</summary>
+        <div class="panel">
+          <div class="panel-h"><h3>The board</h3><span class="cap">Δ = college-only pick order minus model rank. Players are compared within their position group.</span></div>
+          <div class="tw"><table id="draftT"></table></div>
+        </div>
+      </details>
+
+      <details class="more">
+        <summary>How I built it, and how well it works</summary>
+        <div class="panel how">
+          <p><b>Compared within position.</b> Every player is scored against his own group: <b>guards, wings or bigs</b>, based on position, height and how he plays (rebounding, shot blocking, three-point volume). A big's rebounds are compared to other bigs, a guard's assists to other guards. The first version compared everyone to the whole class, so bigs dominated: all four centers made its top 12, while only 3 of 24 guards made the top 15.</p>
+          <p><b>Eight stats per group.</b> Scoring and efficiency, rebounding, playmaking, steals plus blocks, ball security, team strength and usage, each as a <b>z-score</b> (how far above or below the average drafted player at his position).</p>
+          <p><b>Age counts.</b> Doing it at 19 is more impressive than doing it at 23, so younger players get a boost (about 29% of the score).</p>
+          <p><b>Injuries don't sink anyone.</b> Under 450 minutes, the player's previous college season is blended in. Jayden Quaintance played only 4 games before his injury, so his full 2024-25 season at Arizona State fills the gap. Players with blended seasons are never called steals or reaches.</p>
+          <p id="dmBacktest"></p>
+          <pre>Score = ( 18·Z(pts/40) + 18·Z(TS%) + 12·Z(reb/40) + 12·Z(ast/40)
+        + 14·Z(stl+blk/40) − 8·Z(tov/40) + 10·Z(team margin) + 8·Z(usage)
+        + 40·Z(younger) ) / 140       Z = within position group (guards / wings / bigs)</pre>
+          <p class="cap"><span id="intl"></span></p>
+          <p class="cap"><b>Stack:</b> college + NBA box scores (hoopR / sportsdataverse) and ESPN height and age → Python (pandas, SciPy) → weekly rookie tracker.</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ===================== NFL ===================== -->
+  <article class="entry" id="nfl">
+    <div class="wrap">
+      <header class="e-head narrow">
+        <p class="e-kick"><span class="sport">NFL</span> · Receivers · <span class="q-updated"></span></p>
+        <h2>Is he actually good, or does his quarterback make him look good?</h2>
+        <p class="dek">Yards and catches mix a receiver's skill with his quarterback and his scheme. Player-tracking data lets me split it into two questions: how open does he get on his own, and does he gain more after the catch than the NFL's own model expects?</p>
+      </header>
+
+      <div class="verdict" id="vNFL">
+        <div class="v-ans"><span class="v-k">What I found</span><div class="v-body"></div><div class="v-foot"><span class="v-upd"></span></div></div>
+        <aside class="v-hero"><span class="v-k">Unsung hero</span><div class="h-body"></div></aside>
+      </div>
+
+      <figure class="panel quad" id="nflQuad">
+        <div class="qctl">
+          <div class="seg-ctl" role="group" aria-label="Season" data-k="season"><button data-v="2026" aria-pressed="true">2026</button><button data-v="2025">2025</button></div>
+          <div class="seg-ctl" role="group" aria-label="Position" data-k="pos"><button data-v="WR" aria-pressed="true">WR</button><button data-v="TE">TE</button></div>
+          <label class="qmin">Min targets <b data-out="min">20</b><input type="range" min="15" max="45" step="1" value="20" data-k="min"></label>
+          <select data-k="team" aria-label="Highlight a team"><option value="">Highlight a team…</option></select>
+          <input type="search" data-k="q" placeholder="Find a player…" aria-label="Find a player">
+        </div>
+        <div class="chart qchart"><div class="tip"></div></div>
+        <p class="qnote cap" data-out="note"></p>
+        <div class="corners"></div>
+      </figure>
+
+      <details class="more">
+        <summary>How the stats work</summary>
+        <div class="panel how"><p><b>Separation</b> is the distance in yards to the nearest defender when the ball arrives. <b>YAC over expected</b> is yards after catch minus what the NFL's model predicts from where the catch happens and where the defenders are. Both come from Next Gen Stats tracking chips, pulled free through nflverse. Dashed lines are the averages of the players shown.</p>
+        <p class="cap"><b>Stack:</b> NFL Next Gen Stats (nflverse) → Python + pandas → this chart. Refreshed every Wednesday.</p></div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ===================== NHL ===================== -->
+  <article class="entry" id="nhl">
+    <div class="wrap">
+      <header class="e-head narrow">
+        <p class="e-kick"><span class="sport">NHL</span> · Defensemen · <span class="q-updated"></span></p>
+        <h2>Who actually defends, not just scores?</h2>
+        <p class="dek">Points and plus-minus are what most fans see for defensemen, and both are noisy. Expected goals measure the quality of the chances. The real question: when he's on the ice at 5-on-5, does his team create more than it gives up?</p>
+      </header>
+
+      <div class="verdict" id="vNHL">
+        <div class="v-ans"><span class="v-k">What I found</span><div class="v-body"></div><div class="v-foot"><span class="v-upd"></span></div></div>
+        <aside class="v-hero"><span class="v-k">Unsung hero</span><div class="h-body"></div></aside>
+      </div>
+
+      <figure class="panel quad" id="nhlQuad">
+        <div class="qctl">
+          <div class="seg-ctl" role="group" aria-label="Season" data-k="season"><button data-v="2026-27" aria-pressed="true">2026–27</button><button data-v="2025-26">2025–26</button></div>
+          <label class="qmin">Min ice time per game <b data-out="min">18 min</b><input type="range" min="15" max="24" step="0.5" value="18" data-k="min"></label>
+          <select data-k="team" aria-label="Highlight a team"><option value="">Highlight a team…</option></select>
+          <input type="search" data-k="q" placeholder="Find a defenseman…" aria-label="Find a defenseman">
+        </div>
+        <div class="chart qchart"><div class="tip"></div></div>
+        <p class="qnote cap" data-out="note"></p>
+        <div class="corners"></div>
+      </figure>
+
+      <details class="more">
+        <summary>How the stats work</summary>
+        <div class="panel how"><p><b>xGF/60</b> and <b>xGA/60</b> are expected goals for and against per 60 minutes of 5-on-5 play with him on the ice, score- and venue-adjusted, from <a href="https://moneypuck.com/data.htm">MoneyPuck</a>. Per-60 rates let a third-pair guy and a 25-minute workhorse compare fairly. Above the diagonal, his team out-chances opponents when he plays. It's a team stat, so partners and usage matter.</p>
+        <p class="cap"><b>Stack:</b> MoneyPuck → Python + pandas → this chart. Refreshed every Wednesday.</p></div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ===================== PREMIER LEAGUE ===================== -->
+  <article class="entry soon" id="epl">
+    <div class="wrap">
+      <header class="e-head narrow">
+        <p class="e-kick"><span class="sport">Premier League</span> · Next entry</p>
+        <h2>Coming this season.</h2>
+        <p class="dek">The next entry in the notebook. Same idea: one question fans argue about, answered with data, and the players who don't get the credit.</p>
+      </header>
+    </div>
+  </article>
+
+  <!-- ===================== FAVORITE PLAYERS ===================== -->
+  <section class="fav-sec" id="fav">
+    <div class="wrap">
+      <header class="e-head narrow">
+        <p class="e-kick"><span class="sport">Personal</span> · My guys</p>
+        <h2>Steve's favorite players</h2>
+        <p class="dek">Everyone has their guys. These are mine. For each one, I wrote what I see when I watch him, then checked whether the numbers agree. Usually they do. Sometimes they add a footnote.</p>
+      </header>
+      <h3 class="fav-sport">NFL</h3>
+      <div class="fav-grid">
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#004c54"><span class="hsw"><img class="hs" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4241478.png&w=240&h=175" alt="DeVonta Smith" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/phi.png&w=96&h=96" data-lg="nfl" data-id="phi" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">DeVonta Smith</div><div class="fav-sub">WR · Philadelphia Eagles</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">He just wins. A Heisman, two national titles at Alabama and a Super Bowl ring, and he's still the name people forget to mention. Great teammate, no noise, and when the Eagles need a play, he makes it.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">1,008</div><div class="t">receiving yards in 2025</div></div><div><div class="n">9th</div><div class="t">in total EPA on his targets, of 95 players with 60+ in 2025</div></div><div><div class="n">12.0</div><div class="t">yards downfield, his average target</div></div></div><p class="fav-num">The tracking data says he doesn't win with pure separation. He gets 2.8 yards, a bit below average. He wins at the catch point on throws 12 yards downfield, the hard catches that keep drives alive. That's the part that gets overlooked.</p>
+        </article>
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#0b162a"><span class="hsw"><img class="hs" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4431611.png&w=240&h=175" alt="Caleb Williams" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/chi.png&w=96&h=96" data-lg="nfl" data-id="chi" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">Caleb Williams</div><div class="fav-sub">QB · Chicago Bears</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">The media is always on Caleb, and for once the hype is aimed the right way. He's a magician who sees plays nobody else does. With Ben Johnson calling plays, Chicago finally looks like a real offense.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">3,942</div><div class="t">pass yards in 2025, a Bears record</div></div><div><div class="n">1.2%</div><div class="t">interception rate, lowest of 27 QBs with 300+ dropbacks</div></div><div><div class="n">3rd</div><div class="t">in EPA per play in the 4th quarter, tied or down one score</div></div></div><p class="fav-num">The magic is real. He led seven comebacks that were trailing in the final two minutes (one in the playoffs), won a wild-card game over Green Bay, and threw the fewest picks per dropback in the league. The footnote: he holds the ball 3.2 seconds, 2nd-longest, and completes 6.7% fewer passes than expected. Year 3 is about turning the chaos into consistency.</p>
+        </article>
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#0b162a"><span class="hsw"><img class="hs" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4685278.png&w=240&h=175" alt="Luther Burden III" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/chi.png&w=96&h=96" data-lg="nfl" data-id="chi" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">Luther Burden III</div><div class="fav-sub">WR · Chicago Bears</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">He makes defenders look silly with the ball in his hands, and you can see the work he puts in. A second-round pick getting the Ben Johnson treatment. Caleb to Burden is the duo I'm most excited about. (Yes, both are on my dynasty team. No, that's not why.)</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">#1</div><div class="t">in average separation, of 120 qualified receivers (4.6 yds, 2025)</div></div><div><div class="n">+0.9</div><div class="t">yards after catch over expected, per catch (top 25%)</div></div><div><div class="n">11th</div><div class="t">in EPA per target in 2025</div></div></div><p class="fav-num">He was the most open receiver in football as a rookie, on only 60 targets. Through 5 weeks of 2026 he already has 23 catches. The volume is catching up to the talent. He's on <a href="#nfl">my receiver chart</a> up the page.</p>
+        </article>
+      </div>
+      <h3 class="fav-sport">NBA</h3>
+      <div class="fav-grid">
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#006bb6"><span class="hsw"><img class="hs" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/5124612.png&w=240&h=175" alt="VJ Edgecombe" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/phi.png&w=96&h=96" data-lg="nba" data-id="phi" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">VJ Edgecombe</div><div class="fav-sub">G · Philadelphia 76ers</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">He showed up and took over right away. He's electric and the most fun guy on the Sixers to watch. He carries himself like he still has something to prove: motivated and humble.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">34</div><div class="t">points in his NBA debut, a Sixers record</div></div><div><div class="n">16.0</div><div class="t">points per game as a rookie, plus 5.6 reb and 4.2 ast</div></div><div><div class="n">3rd</div><div class="t">in Rookie of the Year voting, and All-Rookie 1st Team</div></div></div><p class="fav-num">In the playoffs he put up 30 and 10 against Boston, the youngest player ever to post a 30-10 game in the postseason. Two things I'm watching in year 2: the jumper (35.4% from three as a rookie) and whether 1.4 steals a game turns him into a real two-way guy.</p>
+        </article>
+      </div>
+      <h3 class="fav-sport">NHL</h3>
+      <div class="fav-grid">
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#003087"><span class="hsw"><img class="hs" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nhl/players/full/5149186.png&w=240&h=175" alt="Zach Benson" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/buf.png&w=96&h=96" data-lg="nhl" data-id="buf" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">Zach Benson</div><div class="fav-sub">LW · Buffalo Sabres</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">A puck hunter. He's 5-foot-10, relentless, first in on the forecheck and in the middle of every scrum. He showed up huge when Buffalo finally made the playoffs.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">5</div><div class="t">playoff goals in 13 games, tied for the team lead</div></div><div><div class="n">+27</div><div class="t">regular-season plus-minus, 2nd on the team</div></div><div><div class="n">64%</div><div class="t">of 5v5 expected goals go Buffalo's way with him on (2026-27 so far)</div></div></div><p class="fav-num">He played about four fewer minutes a night than the top guys and still tied them in playoff goals, including the Game 4 winner against Montreal at 21. That followed a career-high 43 points in the regular season. Early this year, the Sabres are controlling play when he's on the ice.</p>
+        </article>
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#003087"><span class="hsw"><img class="hs" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nhl/players/full/4874863.png&w=240&h=175" alt="Olen Zellweger" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/buf.png&w=96&h=96" data-lg="nhl" data-id="buf" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">Olen Zellweger</div><div class="fav-sub">D · Buffalo Sabres</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">He caught my eye the day we traded for him, and everything I heard was good. He flies around the ice. He's the kind of mobile defenseman this team needed.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">5th</div><div class="t">in the NHL in 20–22 mph speed bursts (2025-26)</div></div><div><div class="n">53.3%</div><div class="t">Anaheim's 5v5 shot share with him on, tied for best among their D</div></div><div><div class="n">66%</div><div class="t">Buffalo's 5v5 expected-goals share with him on (6 games)</div></div></div><p class="fav-num">Buffalo got him in June for prospect Anton Wahlberg and a second-round pick. It's a small sample, but he has 2 goals in 6 games, and his on-ice expected-goals share ranks in the top 5% of NHL defensemen so far. I'll be watching where he lands on <a href="#nhl">my defensemen chart</a>.</p>
+        </article>
+      </div>
+      <h3 class="fav-sport">Premier League</h3>
+      <div class="fav-grid">
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#db0007"><span class="hsw"><img class="hs pl" src="https://resources.premierleague.com/premierleague/photos/players/250x250/p223340.png" alt="Bukayo Saka" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/359.png&w=96&h=96" data-lg="soccer" data-id="359" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">Bukayo Saka</div><div class="fav-sub">RW · Arsenal</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">My current Özil. I was a fan right away. He looked like a kid out there on the biggest stage, and I couldn't believe how confident he played. He's been in Arsenal's academy since he was 7, and now he's a champion.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">17</div><div class="t">his age at his Premier League debut</div></div><div><div class="n">300+</div><div class="t">Arsenal appearances</div></div><div><div class="n">61</div><div class="t">Premier League goals</div></div></div><p class="fav-num">He's the youngest Arsenal player ever to reach 50 Premier League goals, was PFA Young Player of the Year in 2022-23, and won England Player of the Year twice. Last season: a league title, Arsenal's first in 22 years, plus the winner against Atlético that sent them to the Champions League final.</p>
+        </article>
+        <article class="fav">
+          <div class="fav-top"><div class="fav-face" style="--tc:#db0007"><span class="hsw"><img class="hs pl" src="https://resources.premierleague.com/premierleague/photos/players/250x250/p462424.png" alt="William Saliba" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/359.png&w=96&h=96" data-lg="soccer" data-id="359" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><div class="fav-name">William Saliba</div><div class="fav-sub">CB · Arsenal</div></div></div>
+          <span class="fav-k">Why he's my guy</span><p class="fav-why">A lockdown defender, and the center back in me loves his story. Arsenal signed him in 2019, and he didn't play a league game for them for three years. He went on loan to Saint-Étienne, Nice and Marseille, kept grinding, came back and took the job. Passion every week.</p>
+          <span class="fav-k num">What the numbers say</span><div class="h-stats fav-stats"><div><div class="n">27</div><div class="t">goals Arsenal conceded in 38 games, fewest in the league (2025-26)</div></div><div><div class="n">4×</div><div class="t">PFA Team of the Year, every season since his debut</div></div><div><div class="n">3</div><div class="t">loan spells before his Arsenal debut</div></div></div><p class="fav-num">Defense is hard to see in a box score. That's the whole point of my NHL project too. The cleanest team number: Arsenal won the 2025-26 title with the best defense in England, and the players have voted Saliba into the Team of the Year four straight seasons.</p>
+        </article>
+        <article class="fav fav-hm">
+          <div class="fav-top"><div class="fav-face" style="--tc:#db0007"><span class="hsw"><img class="hs pl" src="https://resources.premierleague.com/premierleague/photos/players/250x250/p37605.png" alt="Mesut Özil" loading="lazy" onerror="this.style.visibility='hidden'"></span><img class="lg fav-badge" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/soccer/500/359.png&w=96&h=96" data-lg="soccer" data-id="359" alt="" loading="lazy" onerror="__lgFail(this)"></div><div><span class="fav-k">Honorable mention · the reason I love the game</span><div class="fav-name">Mesut Özil</div><div class="fav-sub">AM · Arsenal, 2013–2021</div></div></div>
+          <p class="fav-why">My favorite athlete ever, and the guy who got me into soccer as a kid. Nobody saw passes like him. He made the hardest thing on the field look like nothing.</p>
+          <div class="h-stats fav-stats"><div><div class="n">19</div><div class="t">Premier League assists in 2015-16, one short of Henry's record</div></div><div><div class="n">2014</div><div class="t">World Cup winner with Germany</div></div><div><div class="n">3</div><div class="t">FA Cups with Arsenal</div></div></div>
+        </article>
+      </div>
+      <p class="cap fav-src">Stats as of Oct 14, 2026. NFL ranks are my own calculations from nflverse play-by-play and Next Gen Stats. NHL from MoneyPuck and NHL.com. NBA and soccer from league and club records. Unlike the entries above, this section is written by hand, not refreshed automatically.</p>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section class="about-sec" id="about">
+    <div class="wrap narrow">
+      <h2 class="sec-h">About</h2>
+      <p>I'm a senior in Information Systems &amp; Analytics at Rowan University (May 2027). I played college soccer for two years and center back my whole life, which is probably why I care about the work that doesn't show up in a box score.</p>
+      <p>At work I build data pipelines and Power BI reporting. This notebook is the other half: explaining what the numbers actually mean and why they matter to fans, bettors and teams. Every entry is built from free public data, cleaned and modeled in Python, R and Power BI, and refreshed automatically each week.</p>
+      <p class="skills">Power BI · DAX · Power Query · Microsoft Fabric · Python (pandas) · R · SQL</p>
+      <p>Open to data analytics, BI and data roles. <a href="mailto:steve.trombetta2023@gmail.com">steve.trombetta2023@gmail.com</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap narrow">
+    <p>Data: ESPN box scores via sportsdataverse (hoopR), NFL Next Gen Stats via nflverse, MoneyPuck, 2026 NBA Draft results. Team logos © their teams. For information and entertainment.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
